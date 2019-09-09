@@ -125,7 +125,7 @@ int main(int argc, char const *argv[])
 	const char* cdf_file = argv[1];
 	int index = atoi(argv[2]);
 	int server_port = atoi(argv[3]);
-	char** server_addrs = (char *[]){"192.168.9.27", "192.168.9.28", "192.168.9.29"};
+	char** server_addrs = (char *[]){"192.168.9.27", "192.168.9.28", "192.168.9.29", "192.168.9.30", "192.168.9.31", "192.168.9.32"};
 	double bandwidth = 10000000000;
 	double load = 0.6;
 	struct exp_random_variable exp_r;
@@ -148,7 +148,7 @@ int main(int argc, char const *argv[])
     	f->flow_size = flow_size;
     	f->server_port = server_port;
     	int addr_index = 0;
-    	while((addr_index = rand() % 3) == index) {
+    	while((addr_index = rand() % 6) == index) {
 
     	}
     	char* server_addr = server_addrs[addr_index];
