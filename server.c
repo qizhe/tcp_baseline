@@ -9,7 +9,7 @@
 #include <pthread.h>
 #include <limits.h>
 // inet_pton ()
-#define TOTAL_FLOW 30000
+#define TOTAL_FLOW 300000
 #define THREADSTACK (PTHREAD_STACK_MIN + 16384)
 
 void* receive_flow(void* arg) {
@@ -58,8 +58,11 @@ int main(int argc, char const *argv[])
 		perror("setsockopt"); 
 		exit(EXIT_FAILURE); 
 	} 
-	if(inet_pton(AF_INET, server_addr, &address.sin_addr)<=0) 
-	{ 
+	printf("addr: %s\n", server_addr);
+	int value;
+	if((value = inet_pton(AF_INET, server_addr, &address.sin_addr)) <= 0) 
+	{
+		printf("value:%d\n", value); 
 		printf("\nInvalid address/ Address not supported \n"); 
 	} 
 	address.sin_family = AF_INET; 
