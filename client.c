@@ -57,6 +57,7 @@ void* start_client(void* info) {
 	// Convert IPv4 and IPv6 addresses from text to binary form 
 	if(inet_pton(AF_INET, f->server_addr, &serv_addr.sin_addr)<=0) 
 	{ 
+		printf("server addr:%s\n", f->server_addr);
 		printf("\nInvalid address/ Address not supported \n"); 
 	} 
 	while (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) 
@@ -124,6 +125,7 @@ int main(int argc, char const *argv[])
 	const char* cdf_file = argv[1];
 	const char* server_addr = argv[2];
 	int server_port = atoi(argv[3]);
+	printf("server addr:%s\n", server_addr);
 	double bandwidth = 10000000000;
 	double load = 0.5;
 	struct exp_random_variable exp_r;
@@ -145,8 +147,8 @@ int main(int argc, char const *argv[])
     	f->flow_id = i;
     	f->flow_size = flow_size;
     	f->server_port = server_port;
-    	f->server_addr = malloc(strlen(server_addr));
-    	memcpy(f->server_addr, server_addr, strlen(server_addr));
+    	f->server_addr = malloc(strlen(server_addr) + 1);
+    	memcpy(f->server_addr, server_addr, strlen(server_addr) + 1);
 		int thread_id = pthread_create(&threads[i],  &attrs, start_client, (void *)f);
     	if(thread_id < 0) {
 			printf("error number:%d\n", thread_id);
