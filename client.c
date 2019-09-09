@@ -123,11 +123,11 @@ void* start_client(void* info) {
 int main(int argc, char const *argv[]) 
 { 
 	const char* cdf_file = argv[1];
-	const char* server_addr = argv[2];
+	int index = atoi(argv[2]);
 	int server_port = atoi(argv[3]);
-	printf("server addr:%s\n", server_addr);
+	char** server_addrs = (char *[]){"192.168.9.27", "192.168.9.28", "192.168.9.29"};
 	double bandwidth = 10000000000;
-	double load = 0.5;
+	double load = 0.6 / 3;
 	struct exp_random_variable exp_r;
 	struct empirical_random_variable emp_r;
 	init_empirical_random_variable(&emp_r, cdf_file ,true);
@@ -147,6 +147,11 @@ int main(int argc, char const *argv[])
     	f->flow_id = i;
     	f->flow_size = flow_size;
     	f->server_port = server_port;
+    	int addr_index = 0;
+    	while((addr_index = rand() % 3) == index) {
+
+    	}
+    	char* server_addr = server_addrs[addr_index];
     	f->server_addr = malloc(strlen(server_addr) + 1);
     	memcpy(f->server_addr, server_addr, strlen(server_addr) + 1);
 		int thread_id = pthread_create(&threads[i],  &attrs, start_client, (void *)f);
