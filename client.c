@@ -127,7 +127,7 @@ int main(int argc, char const *argv[])
 	int server_port = atoi(argv[3]);
 	char** server_addrs = (char *[]){"192.168.9.27", "192.168.9.28", "192.168.9.29"};
 	double bandwidth = 10000000000;
-	double load = 0.6 / 3;
+	double load = 0.6;
 	struct exp_random_variable exp_r;
 	struct empirical_random_variable emp_r;
 	init_empirical_random_variable(&emp_r, cdf_file ,true);
@@ -164,7 +164,6 @@ int main(int argc, char const *argv[])
    }
    pthread_attr_destroy(&attrs);
 
-   printf("finish \n");
    pthread_exit(NULL);
 
 } 
