@@ -144,10 +144,10 @@ int main(int argc, char const *argv[])
         f->flow_id = i;
         f->flow_size = flow_size;
         f->server_port = server_port;
-        int addr_index = 2;
-        // while((addr_index = rand() % 6) == index) {
+        int addr_index = 0;
+         while((addr_index = rand() % 6) == index) {
 
-        // }
+        }
         char* server_addr = server_addrs[addr_index];
         f->server_addr = malloc(strlen(server_addr) + 1);
         memcpy(f->server_addr, server_addr, strlen(server_addr) + 1);
