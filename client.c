@@ -40,6 +40,9 @@ void* start_client(void* info) {
     int sock = 0, valread; 
     struct sockaddr_in serv_addr; 
     char *msg = (char*)malloc(f->flow_size * sizeof(char));
+    clock_t time1, time2;
+    // clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
+    time1 = clock();
     if(msg == NULL) {
         printf("heap is full\n");
     }
@@ -76,9 +79,7 @@ void* start_client(void* info) {
         exit(EXIT_FAILURE);
 
     }
-    clock_t time1, time2;
-    // clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
-    time1 = clock();
+
     while(sent_bytes != f->flow_size) {
         int sent = send(sock, msg + sent_bytes, f->flow_size - sent_bytes, 0); 
         if(sent == -1) {
