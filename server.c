@@ -28,9 +28,12 @@ void* receive_flow(void* arg) {
 			break;
 		}
 	}
-    if(close(new_socket) < 0) {
-    	exit(EXIT_FAILURE);
-    }
+	int valread = read(new_socket, buffer, 1460);
+	if(valread == 0) {
+	    if(close(new_socket) < 0) {
+	    	exit(EXIT_FAILURE);
+	    }
+	}
     pthread_exit(NULL);
 
 }
