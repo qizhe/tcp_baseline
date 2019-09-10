@@ -20,20 +20,11 @@ void* receive_flow(void* arg) {
 		int valread = read(new_socket, buffer, 1460);
 		if(buffer[valread - 1] == 'd') {
 			// printf("get d: val read:%d\n", valread);
-			char* end_str = "d";
-			valread = send(new_socket , end_str , 1 , 0);
-			while(valread != 1) {
-				valread = send(new_socket , end_str , 1 , 0);
-			}
 			break;
 		}
 	}
-	int valread = read(new_socket, buffer, 1460);
-	if(valread == 0) {
-	    if(close(new_socket) < 0) {
-	    	exit(EXIT_FAILURE);
-	    }
-	}
+	close(new_socket);
+
     pthread_exit(NULL);
 
 }
