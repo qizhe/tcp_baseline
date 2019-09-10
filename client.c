@@ -76,9 +76,9 @@ void* start_client(void* info) {
         exit(EXIT_FAILURE);
 
     }
-    struct timespec time1, time2;
-    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
-
+    clock_t time1, time2;
+    // clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
+    time1 = clock();
     while(sent_bytes != f->flow_size) {
         int sent = send(sock, msg + sent_bytes, f->flow_size - sent_bytes, 0); 
         if(sent == -1) {
@@ -106,9 +106,11 @@ void* start_client(void* info) {
     }
     if(valread == 0) {
         // flow finishes track info
-        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
-        struct timespec dif = diff(time1,time2);
-        printf("flow %u flow_size:%d time: %lu \n", f->flow_id, f->flow_size, dif.tv_nsec + dif.tv_sec * 1000000000);
+        // clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
+        time2 = clock();
+        float dif =  (time2 - time1) / (float)(CLOCKS_PER_SEC);
+        // struct timespec dif = diff(time1,time2);
+        printf("flow %u flow_size:%d time: %f \n", f->flow_id, f->flow_size, dif);
     }
     close(sock);
     free(f->server_addr);
