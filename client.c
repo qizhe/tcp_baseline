@@ -107,7 +107,8 @@ void* start_client(void* info) {
     if(valread == 0) {
         // flow finishes track info
         clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
-        printf("flow %u flow_size:%d time: %u \n", f->flow_id, f->flow_size, diff(time1,time2).tv_nsec);
+        struct timespec dif = diff(time1,time2);
+        printf("flow %u flow_size:%d time: %lu \n", f->flow_id, f->flow_size, dif.tv_nsec + dif.tv_sec * 1000000000);
     }
     close(sock);
     free(f->server_addr);
