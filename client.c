@@ -126,7 +126,9 @@ int main(int argc, char const *argv[])
     const char* cdf_file = argv[1];
     int index = atoi(argv[2]);
     int server_port = atoi(argv[3]);
-    char** server_addrs = (char *[]){"128.84.139.23", "128.84.139.24", "128.84.139.25", "128.84.139.26", "128.84.139.27", "128.84.139.28"};
+    char** server_addrs = (char *[]){"5.0.0.10", "6.0.0.10", "7.0.0.10", "8.0.0.10", "9.0.0.10", "10.0.0.10"};
+    // char** server_addrs = (char *[]){"5.0.0.10", "6.0.0.10"};
+
     double bandwidth = 10000000000;
     double load = 0.6;
     struct exp_random_variable exp_r;
