@@ -151,7 +151,7 @@ int main(int argc, char const *argv[])
         f->flow_size = flow_size;
         f->server_port = server_port;
         int addr_index = 0;
-         while((addr_index = rand() % 2) == index) {
+         while((addr_index = rand() % 8) == index) {
 
         }
         char* server_addr = server_addrs[addr_index];
