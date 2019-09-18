@@ -34,15 +34,13 @@ struct flow_info {
     int flow_size;
     char* server_addr;
     int server_port;
+    clock_t start_time;
 };
-void* start_client(void* info) {
-    struct flow_info* f = (struct flow_info*)info;
+
+bool send_flow(struct flow_info* f) {
+    char *msg = (char*)malloc(f->flow_size * sizeof(char));
     int sock = 0, valread; 
     struct sockaddr_in serv_addr; 
-    char *msg = (char*)malloc(f->flow_size * sizeof(char));
-    clock_t time1, time2;
-    // clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
-    time1 = clock();
     if(msg == NULL) {
         printf("heap is full\n");
     }
@@ -52,10 +50,8 @@ void* start_client(void* info) {
     unsigned int sent_bytes = 0;
     while ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) 
     { 
-        free(f->server_addr);
-        free(f);
         free(msg);
-        pthread_exit(NULL);
+        return false;
     } 
 
     serv_addr.sin_family = AF_INET; 
@@ -72,11 +68,9 @@ void* start_client(void* info) {
         fprintf(stderr,"server addr:%s\n", f->server_addr);
 
         fprintf(stderr, "\nConnection Failed \n"); 
-            free(f->server_addr);
-            free(f);
             free(msg);
-            pthread_exit(NULL);
-        exit(EXIT_FAILURE);
+            close(sock);
+            return false;
 
     }
 
@@ -85,11 +79,9 @@ void* start_client(void* info) {
         if(sent == -1) {
             fprintf(stderr, "socket error");
             fprintf(stderr, "socket() failed: %s\n", strerror(errno));
-            free(f->server_addr);
-            free(f);
             free(msg);
-            pthread_exit(NULL);
-            exit(EXIT_FAILURE);
+            close(sock);
+            return false;
 
         } else
             sent_bytes += sent;
@@ -99,26 +91,30 @@ void* start_client(void* info) {
     if(valread < 0){
         fprintf(stderr, "val read < 0\n");    
         fprintf(stderr, "socket() failed: %s\n", strerror(errno));
-        free(f->server_addr);
-        free(f);
         free(msg);
-        pthread_exit(NULL);
-        exit(EXIT_FAILURE);
+        close(sock);
+        return false;
     }
     if(valread == 0) {
         // flow finishes track info
         // clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
-        time2 = clock();
-        float dif =  (time2 - time1) / (float)(CLOCKS_PER_SEC);
         // struct timespec dif = diff(time1,time2);
-        printf("flow %u flow_size:%d time: %f \n", f->flow_id, f->flow_size, dif);
     }
     close(sock);
+    free(msg);
+    return true;
+}
+void* start_client(void* info) {
+    struct flow_info* f = (struct flow_info*)info;
+    clock_t time2;
+    // clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
+    while(send_flow(f) == false) {
+    }
+    time2 = clock();
+    float dif =  (time2 - f->start_time) / (float)(CLOCKS_PER_SEC);
+    printf("flow %u flow_size:%d time: %f \n", f->flow_id, f->flow_size, dif);
     free(f->server_addr);
     free(f);
-    free(msg);
-    pthread_exit(NULL);
-
 }
 
 int main(int argc, char const *argv[]) 
@@ -150,6 +146,7 @@ int main(int argc, char const *argv[])
         f->flow_id = i;
         f->flow_size = flow_size;
         f->server_port = server_port;
+        f->start_time = clock();
         int addr_index = 0;
          while((addr_index = rand() % 8) == index) {
 
