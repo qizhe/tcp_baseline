@@ -126,11 +126,11 @@ int main(int argc, char const *argv[])
     const char* cdf_file = argv[1];
     int index = atoi(argv[2]);
     int server_port = atoi(argv[3]);
-    char** server_addrs = (char *[]){"5.0.0.10", "6.0.0.10", "7.0.0.10", "8.0.0.10", "9.0.0.10", "10.0.0.10"};
+    char** server_addrs = (char *[]){"5.0.0.10", "6.0.0.10", "7.0.0.10", "8.0.0.10", "9.0.0.10", "10.0.0.10", "11.0.0.10", "12.0.0.10"};
     // char** server_addrs = (char *[]){"5.0.0.10", "6.0.0.10"};
 
     double bandwidth = 10000000000;
-    double load = 0.6;
+    double load = 0.5;
     struct exp_random_variable exp_r;
     struct empirical_random_variable emp_r;
     init_empirical_random_variable(&emp_r, cdf_file ,true);
@@ -151,7 +151,7 @@ int main(int argc, char const *argv[])
         f->flow_size = flow_size;
         f->server_port = server_port;
         int addr_index = 0;
-         while((addr_index = rand() % 6) == index) {
+         while((addr_index = rand() % 2) == index) {
 
         }
         char* server_addr = server_addrs[addr_index];
