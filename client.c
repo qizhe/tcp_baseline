@@ -30,7 +30,7 @@ double diff(struct timespec start, struct timespec end)
         temp.tv_sec = end.tv_sec-start.tv_sec;
         temp.tv_nsec = end.tv_nsec-start.tv_nsec;
     }
-    return temp.tv_sec + temp.tv_nsec * 10e-9;
+    return temp.tv_sec + temp.tv_nsec * 1e-9;
 }
 
 struct flow_info {
@@ -170,14 +170,17 @@ int main(int argc, char const *argv[])
     pthread_attr_init(&attrs);
     pthread_attr_setstacksize(&attrs, THREADSTACK);
     struct timespec offset1, offset2; 
-
     for (int i = 0; i < NUM_FLOW; i++) {
 
-        // clock_gettime(CLOCK_REALTIME, &offset1); 
-
-        usleep(time * 1000000);
-        // clock_gettime(CLOCK_REALTIME, &offset2); 
-        // printf("diff:%f\n", diff(offset1, offset2));
+//        clock_gettime(CLOCK_REALTIME, &offset1); 
+	struct timespec wait;
+	wait.tv_nsec = time * 1e9;
+        nanosleep(&wait, NULL);
+	//usleep(time * 1000000);
+//        clock_gettime(CLOCK_REALTIME, &offset2); 
+//	printf("time:%f\n", time);
+//        printf("old: %f\n", diff(offset1, offset2));
+//	printf("diff:%f\n", diff(offset1, offset2) - time);
         // printf("time:%f\n", time);
         // continue;
         struct flow_info *f = malloc(sizeof(struct flow_info));
