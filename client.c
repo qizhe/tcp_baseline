@@ -10,13 +10,17 @@
 #include <unistd.h>
 #include <errno.h>
 #include <time.h>
+#include <sys/time.h>   
+#include <sys/resource.h>
 
+
+#define _GNU_SOURCE
 
 #include "random_variable.h"
 #define NUM_FLOW 5000
 #define THREADSTACK (PTHREAD_STACK_MIN + 32768)
 
-struct timespec diff(struct timespec start, struct timespec end)
+double diff(struct timespec start, struct timespec end)
 {
     struct timespec temp;
     if ((end.tv_nsec-start.tv_nsec)<0) {
@@ -26,7 +30,7 @@ struct timespec diff(struct timespec start, struct timespec end)
         temp.tv_sec = end.tv_sec-start.tv_sec;
         temp.tv_nsec = end.tv_nsec-start.tv_nsec;
     }
-    return temp;
+    return temp.tv_sec + temp.tv_nsec * 10e-9;
 }
 
 struct flow_info {
@@ -34,7 +38,7 @@ struct flow_info {
     int flow_size;
     char* server_addr;
     int server_port;
-    clock_t start_time;
+    struct timespec start_time;
 };
 
 bool send_flow(struct flow_info* f) {
@@ -106,17 +110,44 @@ bool send_flow(struct flow_info* f) {
 }
 void* start_client(void* info) {
     struct flow_info* f = (struct flow_info*)info;
-    clock_t time2;
+    struct timespec time2;
     // clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
     while(send_flow(f) == false) {
     }
-    time2 = clock();
-    float dif =  (time2 - f->start_time) / (float)(CLOCKS_PER_SEC);
-    printf("flow %u flow_size:%d time: %f \n", f->flow_id, f->flow_size, dif);
+    clock_gettime(CLOCK_REALTIME, &time2); 
+    printf("flow %u flow_size:%d time: %f \n", f->flow_id, f->flow_size, diff(f->start_time, time2));
     free(f->server_addr);
     free(f);
 }
 
+// void set_cpu_affinity() {
+//      int s, j;
+//      cpu_set_t cpuset;
+//        pthread_t thread;
+
+//        thread = pthread_self();
+
+//        /* Set affinity mask to include CPUs 0 */
+
+//        CPU_ZERO(&cpuset);
+//        for (j = 0; j < 1; j++)
+//            CPU_SET(j, &cpuset);
+
+//        s = pthread_setaffinity_np(thread, sizeof(cpu_set_t), &cpuset);
+//        if (s != 0)
+//            handle_error_en(s, "pthread_setaffinity_np");
+
+//        /* Check the actual affinity mask assigned to the thread */
+
+//        s = pthread_getaffinity_np(thread, sizeof(cpu_set_t), &cpuset);
+//        if (s != 0)
+//            handle_error_en(s, "pthread_getaffinity_np");
+
+//        printf("Set returned by pthread_getaffinity_np() contained:\n");
+//        for (j = 0; j < CPU_SETSIZE; j++)
+//            if (CPU_ISSET(j, &cpuset))
+//                printf("    CPU %d\n", j);
+// }
 int main(int argc, char const *argv[]) 
 { 
     const char* cdf_file = argv[1];
@@ -124,7 +155,7 @@ int main(int argc, char const *argv[])
     int server_port = atoi(argv[3]);
     char** server_addrs = (char *[]){"5.0.0.10", "6.0.0.10", "7.0.0.10", "8.0.0.10", "9.0.0.10", "10.0.0.10", "11.0.0.10", "12.0.0.10"};
     // char** server_addrs = (char *[]){"5.0.0.10", "6.0.0.10"};
-
+    // set_cpu_affinity();
     double bandwidth = 10000000000;
     double load = 0.5;
     struct exp_random_variable exp_r;
@@ -138,15 +169,23 @@ int main(int argc, char const *argv[])
     pthread_attr_t  attrs;
     pthread_attr_init(&attrs);
     pthread_attr_setstacksize(&attrs, THREADSTACK);
+    struct timespec offset1, offset2; 
+
     for (int i = 0; i < NUM_FLOW; i++) {
 
+        // clock_gettime(CLOCK_REALTIME, &offset1); 
+
         usleep(time * 1000000);
+        // clock_gettime(CLOCK_REALTIME, &offset2); 
+        // printf("diff:%f\n", diff(offset1, offset2));
+        // printf("time:%f\n", time);
+        // continue;
         struct flow_info *f = malloc(sizeof(struct flow_info));
         // printf("flow %u size:%d\n", i, flow_size);
         f->flow_id = i;
         f->flow_size = flow_size;
         f->server_port = server_port;
-        f->start_time = clock();
+        clock_gettime(CLOCK_REALTIME, &f->start_time);
         int addr_index = 0;
          while((addr_index = rand() % 8) == index) {
 
