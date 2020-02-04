@@ -153,11 +153,11 @@ int main(int argc, char const *argv[])
     const char* cdf_file = argv[1];
     int index = atoi(argv[2]);
     int server_port = atoi(argv[3]);
-    // char** server_addrs = (char *[]){"10.0.0.1", "10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6", "10.0.0.7", "10.0.0.8"};
-    char** server_addrs = (char *[]){"10.0.0.6", "10.0.0.9"};
+    char** server_addrs = (char *[]){"10.0.0.1", "10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6", "10.0.0.7", "10.0.0.8"};
+//    char** server_addrs = (char *[]){"10.0.0.6", "10.0.0.9"};
     // set_cpu_affinity();
     double bandwidth = 40000000000;
-    double load = 0.5;
+    double load = 0.4;
     struct exp_random_variable exp_r;
     struct empirical_random_variable emp_r;
     init_empirical_random_variable(&emp_r, cdf_file ,true);
@@ -174,6 +174,7 @@ int main(int argc, char const *argv[])
 
 //        clock_gettime(CLOCK_REALTIME, &offset1); 
 	struct timespec wait;
+	wait.tv_sec = 0;
 	wait.tv_nsec = time * 1e9;
         nanosleep(&wait, NULL);
 	//usleep(time * 1000000);
