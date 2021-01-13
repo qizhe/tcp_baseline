@@ -25,9 +25,9 @@ struct exp_random_variable {
 	double max_;
 };
 
-void init_empirical_random_variable(struct empirical_random_variable* r, char* filename, bool smooth);
+void init_empirical_random_variable(struct empirical_random_variable* r, const char* filename, bool smooth);
 void init_exp_random_variable(struct exp_random_variable* r, double avg);
-int loadCDF(struct empirical_random_variable* r, char* filename);
+int loadCDF(struct empirical_random_variable* r, const char* filename);
 int lookup(struct empirical_random_variable* r, double u);
 double value_emp(struct empirical_random_variable* r);
 double value_exp(struct exp_random_variable* r);

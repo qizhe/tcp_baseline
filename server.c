@@ -8,12 +8,15 @@
 #include <string.h> 
 #include <pthread.h>
 #include <limits.h>
+ #include <stdint.h>
+#include <inttypes.h>
+#include <vector>
 // inet_pton ()
 #define TOTAL_FLOW 300000
 #define THREADSTACK (PTHREAD_STACK_MIN + 16384)
 
 void* receive_flow(void* arg) {
-	int new_socket = (int) arg;
+	int new_socket = static_cast<int>(reinterpret_cast<intptr_t>(arg));
 	char buffer[1460] = {0}; 
 	// printf("new connection\n");
 	while(1) {
@@ -34,7 +37,7 @@ int main(int argc, char const *argv[])
 	struct sockaddr_in address; 
 	int opt = 1; 
 	int addrlen = sizeof(address); 
-	char *hello = "Hello from server"; 
+	// char *hello = "Hello from server"; 
 	const char *server_addr = argv[1];
 	int server_port = atoi(argv[2]);
 

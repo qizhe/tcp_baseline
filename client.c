@@ -12,8 +12,8 @@
 #include <time.h>
 #include <sys/time.h>   
 #include <sys/resource.h>
-
-
+#include <vector>
+#include <string>
 #define _GNU_SOURCE
 
 #include "random_variable.h"
@@ -153,8 +153,9 @@ int main(int argc, char const *argv[])
     const char* cdf_file = argv[1];
     int index = atoi(argv[2]);
     int server_port = atoi(argv[3]);
-    char** server_addrs = (char *[]){"5.0.0.10", "6.0.0.10", "7.0.0.10", "8.0.0.10", "9.0.0.10", "10.0.0.10", "11.0.0.10", "12.0.0.10"};
+    // char** server_addrs = (char *[]){"5.0.0.10", "6.0.0.10", "7.0.0.10", "8.0.0.10", "9.0.0.10", "10.0.0.10", "11.0.0.10", "12.0.0.10"};
     // char** server_addrs = (char *[]){"5.0.0.10", "6.0.0.10"};
+    std::vector<std::string> server_addrs = {"5.0.0.10", "6.0.0.10"};
     // set_cpu_affinity();
     double bandwidth = 10000000000;
     double load = 0.5;
@@ -183,7 +184,7 @@ int main(int argc, char const *argv[])
 //	printf("diff:%f\n", diff(offset1, offset2) - time);
         // printf("time:%f\n", time);
         // continue;
-        struct flow_info *f = malloc(sizeof(struct flow_info));
+        struct flow_info *f = (flow_info *)malloc(sizeof(struct flow_info));
         // printf("flow %u size:%d\n", i, flow_size);
         f->flow_id = i;
         f->flow_size = flow_size;
@@ -193,9 +194,9 @@ int main(int argc, char const *argv[])
          while((addr_index = rand() % 8) == index) {
 
         }
-        char* server_addr = server_addrs[addr_index];
-        f->server_addr = malloc(strlen(server_addr) + 1);
-        memcpy(f->server_addr, server_addr, strlen(server_addr) + 1);
+        std::string server_addr = server_addrs[addr_index];
+        f->server_addr = (char*)malloc(strlen(server_addr.c_str()) + 1);
+        memcpy(f->server_addr, server_addr.c_str(), strlen(server_addr.c_str()) + 1);
         int thread_id = pthread_create(&threads[i],  &attrs, start_client, (void *)f);
         if(thread_id < 0) {
             printf("error number:%d\n", thread_id);

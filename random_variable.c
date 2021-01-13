@@ -1,12 +1,12 @@
 #include "random_variable.h"
 #include <math.h>
 
-void init_empirical_random_variable(struct empirical_random_variable* r, char* filename, bool smooth) {
+void init_empirical_random_variable(struct empirical_random_variable* r, const char* filename, bool smooth) {
   r->smooth = smooth;
   r->minCDF_ = 0;
   r->maxCDF_ = 1;
   r->maxEntry_ = 65536;
-  r->table_ = malloc(sizeof(struct CDFentry) * r->maxEntry_);
+  r->table_ = (CDFentry*) malloc(sizeof(struct CDFentry) * r->maxEntry_);
   loadCDF(r, filename);
 }
 
@@ -17,7 +17,7 @@ void init_exp_random_variable(struct exp_random_variable* r, double avg) {
   r->avg_ = avg;
 
 }
-int loadCDF(struct empirical_random_variable* r, char* filename) {
+int loadCDF(struct empirical_random_variable* r, const char* filename) {
   //assert(false);
   char line[1000];
   FILE * fptr;
