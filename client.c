@@ -14,6 +14,7 @@
 #include <sys/resource.h>
 #include <vector>
 #include <string>
+#include <iostream>
 #define _GNU_SOURCE
 
 #include "random_variable.h"
@@ -45,6 +46,7 @@ bool send_flow(struct flow_info* f) {
     char *msg = (char*)malloc(f->flow_size * sizeof(char));
     int sock = 0, valread; 
     struct sockaddr_in serv_addr; 
+    
     if(msg == NULL) {
         printf("heap is full\n");
     }
@@ -64,6 +66,7 @@ bool send_flow(struct flow_info* f) {
     // Convert IPv4 and IPv6 addresses from text to binary form 
     if(inet_pton(AF_INET, f->server_addr, &serv_addr.sin_addr)<=0) 
     { 
+        std::cout << f->server_addr << std::endl;
         printf("server addr:%s\n", f->server_addr);
         printf("\nInvalid address/ Address not supported \n"); 
     } 
@@ -153,9 +156,10 @@ int main(int argc, char const *argv[])
     const char* cdf_file = argv[1];
     int index = atoi(argv[2]);
     int server_port = atoi(argv[3]);
+    int num_hosts = atoi(argv[4]);
     // char** server_addrs = (char *[]){"5.0.0.10", "6.0.0.10", "7.0.0.10", "8.0.0.10", "9.0.0.10", "10.0.0.10", "11.0.0.10", "12.0.0.10"};
     // char** server_addrs = (char *[]){"5.0.0.10", "6.0.0.10"};
-    std::vector<std::string> server_addrs = {"5.0.0.10", "6.0.0.10"};
+    std::vector<std::string> server_addrs;
     // set_cpu_affinity();
     double bandwidth = 10000000000;
     double load = 0.5;
@@ -171,6 +175,12 @@ int main(int argc, char const *argv[])
     pthread_attr_init(&attrs);
     pthread_attr_setstacksize(&attrs, THREADSTACK);
     struct timespec offset1, offset2; 
+
+    for (int i = 1; i <= num_hosts; i++) {
+        server_addrs.push_back("10.10.1" + std::to_string(i));
+        // server_addrs.push_back(std::to_string(i) + ".0.0.10");
+
+    }
     for (int i = 0; i < NUM_FLOW; i++) {
 
 //        clock_gettime(CLOCK_REALTIME, &offset1); 
@@ -191,12 +201,12 @@ int main(int argc, char const *argv[])
         f->server_port = server_port;
         clock_gettime(CLOCK_REALTIME, &f->start_time);
         int addr_index = 0;
-         while((addr_index = rand() % 8) == index) {
+         while((addr_index = rand() % 2) == index) {
 
         }
         std::string server_addr = server_addrs[addr_index];
         f->server_addr = (char*)malloc(strlen(server_addr.c_str()) + 1);
-        memcpy(f->server_addr, server_addr.c_str(), strlen(server_addr.c_str()) + 1);
+        strcpy(f->server_addr, server_addr.c_str());
         int thread_id = pthread_create(&threads[i],  &attrs, start_client, (void *)f);
         if(thread_id < 0) {
             printf("error number:%d\n", thread_id);
