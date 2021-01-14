@@ -177,7 +177,7 @@ int main(int argc, char const *argv[])
     struct timespec offset1, offset2; 
 
     for (int i = 1; i <= num_hosts; i++) {
-        server_addrs.push_back("10.10.1" + std::to_string(i));
+        server_addrs.push_back("10.10.1." + std::to_string(i));
         // server_addrs.push_back(std::to_string(i) + ".0.0.10");
 
     }
