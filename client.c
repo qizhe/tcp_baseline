@@ -201,7 +201,7 @@ int main(int argc, char const *argv[])
         f->server_port = server_port;
         clock_gettime(CLOCK_REALTIME, &f->start_time);
         int addr_index = 0;
-         while((addr_index = rand() % 2) == index) {
+         while((addr_index = rand() % num_hosts) == index) {
 
         }
         std::string server_addr = server_addrs[addr_index];
