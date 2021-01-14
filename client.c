@@ -116,6 +116,7 @@ void* start_client(void* info) {
     struct timespec time2;
     // clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
     while(send_flow(f) == false) {
+    	clock_gettime(CLOCK_REALTIME, &f->start_time);
     }
     clock_gettime(CLOCK_REALTIME, &time2); 
     printf("flow %u flow_size:%d time: %f \n", f->flow_id, f->flow_size, diff(f->start_time, time2));
