@@ -227,11 +227,12 @@ int main(int argc, char const *argv[])
 	{ 
 		int new_socket = accept(server_fd, (struct sockaddr *)&address, 
 					(socklen_t*)&addrlen);
-    	pthread_create(&threads[i], &attrs, receive_flow, (void*)new_socket);
+    	// pthread_create(&threads[i], &attrs, receive_flow, (void*)new_socket);
+		receive_flow((void*)new_socket);
     	i++;
 
 	} 
-    pthread_attr_destroy(&attrs);
+    // pthread_attr_destroy(&attrs);
  	for(int i = 0; i < workers.size(); i++) {
 		workers[i].join();
 	}
