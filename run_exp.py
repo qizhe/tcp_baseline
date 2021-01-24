@@ -16,7 +16,7 @@ def run_client(cpu, port, flow_size, max_rate, filename):
 
 def run_server(cpu, port, ip_addr, filename):
     f = open(filename, 'w')
-    print ("run server")
+    print ("run server", cpu)
     args = ["taskset", "-c", str(cpu), "./server", ip_addr, str(port)]
     return subprocess.Popen(args, stdout=f, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL, universal_newlines=True)
 
@@ -45,7 +45,7 @@ if __name__ == "__main__":
         if args.client:
             thread = run_client(i, args.start_port + i, args.flow_size, args.max_rate, "result_{}".format(i))
         else:
-            thread = run_server(i, args.start_port, args.ip, "result_{}".format(i))
+            thread = run_server(i, args.start_port + i, args.ip, "result_{}".format(i))
         threads.append(thread)
     for p in threads:
         p.wait()
