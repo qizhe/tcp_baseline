@@ -1,6 +1,6 @@
-index=$1
-port=$2
-trace=$3
-num_server=$4
+# index=$1
+num_server=$1
+# num_server=$3
+flow_size=$2
+python run_exp.py --client --flow_size $flow_size --num_conns $num_server
 
-./client CDF_$trace.txt $index $port $num_server > result_"$trace"_"$index"
