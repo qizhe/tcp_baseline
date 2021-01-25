@@ -158,12 +158,13 @@ void* receive_flow(void* arg) {
 		std::atomic_fetch_add(&agg_stats.total_bytes, (unsigned long)valread);
 		if(buffer[valread - 1] == 'd') {
 			// printf("get d: val read:%d\n", valread);
-			break;
+			send(new_socket, buffer, 1, 0);
+			// break;
 		}
 	}
 	close(new_socket);
 	free(buffer);
-    pthread_exit(NULL);
+    // pthread_exit(NULL);
 
 }
 int main(int argc, char const *argv[]) 
