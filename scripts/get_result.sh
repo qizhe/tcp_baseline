@@ -34,11 +34,13 @@ ms1332
 )
 
 num_hosts=$1
-workload="websearch"
+workload=websearch
 i=0
+
+mkdir -p ../result/$num_hosts
 # run experiment
 for addr in  "${ssh_array[@] : 0 : $num_hosts}";
 	do 
-	 	scp -r artifact@$addr.utah.cloudlab.us:~/tcp_baseline/result_"$workload"_"$i" ../result/result_"$workload"_$i.txt
+	 	scp -r artifact@$addr.utah.cloudlab.us:~/tcp_baseline/result_"$workload"_"$i" ../result/"$num_hosts"/result_"$workload"_$i.txt
 		i=$((i+1))
 	done

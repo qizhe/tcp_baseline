@@ -1,5 +1,4 @@
 #!/bin/bash
-num_host=$1
 ssh_array=(
 ms1301
 ms1302
@@ -33,6 +32,8 @@ ms1329
 ms1330
 ms1331
 ms1332)
+
+num_hosts=$1
 
 # set up the server
 for addr in  "${ssh_array[@] : 0 : $num_hosts}";

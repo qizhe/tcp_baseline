@@ -33,14 +33,10 @@ ms1331
 ms1332
 )
 
-num_hosts=$1
-workload=websearch
+workload=$1
+num_hosts=$2
+
 i=1
-for addr in  "${ssh_array[@] : 0 : $num_hosts}";
-	do 
-	 	ssh -o StrictHostKeyChecking=no -p 22 artifact@$addr.utah.cloudlab.us "killall server; killall client" &
-	 	((i = i + 1))
-	done
 
 sleep 5
 
@@ -57,7 +53,14 @@ sleep 5
 i=0
 for addr in  "${ssh_array[@] : 0 : $num_hosts}";
 	do 
-		echo "hello"
-	 	ssh -o StrictHostKeyChecking=no -p 22 artifact@$addr.utah.cloudlab.us "cd ~/tcp_baseline; ./run_client.sh $i 5000 $workload 32" &
+	 	ssh -o StrictHostKeyChecking=no -p 22 artifact@$addr.utah.cloudlab.us "cd ~/tcp_baseline; ./run_client.sh $i 5000 $workload 32" > debug &
+	 	((i = i + 1))
+	done
+
+sleep 120
+
+for addr in  "${ssh_array[@] : 0 : $num_hosts}";
+	do 
+	 	ssh -o StrictHostKeyChecking=no -p 22 artifact@$addr.utah.cloudlab.us "killall server; killall client" > debug &
 	 	((i = i + 1))
 	done
