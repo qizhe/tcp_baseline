@@ -38,6 +38,6 @@ num_hosts=$1
 # set up the server
 for addr in  "${ssh_array[@]: 0 : $num_hosts}";
 	do 
-		ssh -o StrictHostKeyChecking=no -p 22 artifact@$addr.utah.cloudlab.us "git clone https://qizhe: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@github.com/qizhe/tcp_baseline.git; cd ~/tcp_baseline;git pull; make" &
+		ssh -o StrictHostKeyChecking=no -p 22 artifact@$addr.utah.cloudlab.us "git clone https://github.com/qizhe/tcp_baseline.git; cd ~/tcp_baseline;git pull; make" &
 		ssh -o StrictHostKeyChecking=no -p 22 artifact@$addr.utah.cloudlab.us "sudo sysctl -w net.ipv4.tcp_congestion_control=cubic;" &
 	done
