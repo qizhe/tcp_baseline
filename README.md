@@ -36,5 +36,5 @@ cd script/
 
 The parsed result is in `result/websearch_32_slowdown_size_tcp.dat` and `result/websearch_32_slowdown_size_dctcp.dat`. The format of files:
 ```
-SIZE_OF_FLOWS MEAN_SLOWDOWN TAIL_SLOWDOWN-MEANSLOWDOWN 
+SIZE_OF_FLOWS MEAN_SLOWDOWN DIFF_BETWEEN_TAIL_AND_MEAN 
 ```
